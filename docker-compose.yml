@@ -1,22 +1,21 @@
 version: '3'
 
 services:
-  db-gps: # ideal: ser alterado para db-<nome-do-projeto>, alterar também na linha abaixo de "depends_on" da api
-    container_name: postgres-gps
+  db-nestjs: # ideal: ser alterado para db-<nome-do-projeto>, alterar também na linha abaixo de "depends_on" da api
+    container_name: ${DB_HOST}
     image: postgres:latest
     restart: always
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_HOST: ${DB_HOST}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - /data/postgres:/data/postgres
 
-  api: # ideal: ser alterado para api-<nome-do-projeto>
-    container_name: backend-gps # ideal: ser alterado para backend-<nome-do-projeto>
+  api-nestjs: # ideal: ser alterado para api-<nome-do-projeto>
+    container_name: backend-nestjs # ideal: ser alterado para backend-<nome-do-projeto>
     build:
       context: .
       dockerfile: Dockerfile
@@ -25,12 +24,12 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - db-gps
+      - db-nestjs
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: yarn start:dev
 
 networks:
-  postgres:
+  db-nestjs:
     driver: bridge
